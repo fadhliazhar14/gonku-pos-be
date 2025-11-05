@@ -1,0 +1,13 @@
+services:
+  gonku-pos-be:
+    image: gonku-pos-be:latest
+    build: .
+    container_name: gonku-pos-be
+    restart: unless-stopped
+    environment:
+      DATASOURCE_URL: ${DATASOURCE_URL}
+      DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
+      DATASOURCE_PASSWORD: ${DATASOURCE_PASSWORD}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+    ports:
+      - "9001:9001"
