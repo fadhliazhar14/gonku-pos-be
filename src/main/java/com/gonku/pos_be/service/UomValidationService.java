@@ -2,22 +2,22 @@ package com.gonku.pos_be.service;
 
 import com.gonku.pos_be.constant.ResponseMessages;
 import com.gonku.pos_be.exception.BusinessValidationException;
-import com.gonku.pos_be.repository.CategoryRepository;
+import com.gonku.pos_be.repository.UomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CategoryValidationService {
-    private final CategoryRepository categoryRepository;
+public class UomValidationService {
+    private final UomRepository uomRepository;
 
-    public void validateCategoryUniqueness(String name, Long id) {
+    public void validateUomUniqueness(String name, Long id) {
         if (id == null) {
-            if (categoryRepository.existsByName(name)) {
+            if (uomRepository.existsByName(name)) {
                 throw new BusinessValidationException(ResponseMessages.taken("Name"));
             }
         } else {
-            if (categoryRepository.existsByNameAndIdNot(name, id)) {
+            if (uomRepository.existsByNameAndIdNot(name, id)) {
                 throw new BusinessValidationException(ResponseMessages.taken("Name"));
             }
         }
