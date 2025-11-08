@@ -1,5 +1,7 @@
 package com.gonku.pos_be.dto.product;
 
+import com.gonku.pos_be.entity.Category;
+import com.gonku.pos_be.entity.Uom;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +11,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class ProductRequestDto {
+public class ProductUpdateRequestDto {
     @NotBlank(message = "Product barcode is required")
     @Size(min = 13, max = 13, message = "Product barcode must be 13 characters")
     private String barcode;
@@ -39,6 +41,4 @@ public class ProductRequestDto {
 
     @Min(value = 0, message = "UoM ID must be equal or greater than 0")
     private Long uomId;
-
-    private Boolean isActive;
 }

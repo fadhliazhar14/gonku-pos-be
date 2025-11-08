@@ -1,9 +1,7 @@
 package com.gonku.pos_be.dto.category;
 
 import com.gonku.pos_be.entity.Category;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -17,6 +15,7 @@ public interface CategoryMapper {
     @Mapping(target = "products", ignore = true)
     Category toEntity(CategoryRequestDto requestDto);
 
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "products", ignore = true)
     @Mapping(target = "isActive", ignore = true)

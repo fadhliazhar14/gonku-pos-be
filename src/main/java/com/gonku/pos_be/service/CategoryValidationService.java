@@ -6,6 +6,8 @@ import com.gonku.pos_be.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.function.Function;
+
 @Component
 @RequiredArgsConstructor
 public class CategoryValidationService {
