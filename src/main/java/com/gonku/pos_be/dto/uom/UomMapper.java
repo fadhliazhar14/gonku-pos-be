@@ -1,9 +1,7 @@
 package com.gonku.pos_be.dto.uom;
 
 import com.gonku.pos_be.entity.Uom;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -16,6 +14,7 @@ public interface UomMapper {
     @Mapping(target = "id", ignore = true)
     Uom toEntity(UomRequestDto requestDto);
 
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "isActive", ignore = true)
     void updateFromDto(UomUpdateRequestDto requestDto, @MappingTarget Uom uom);
