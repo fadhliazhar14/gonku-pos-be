@@ -85,9 +85,9 @@ public class OrderService {
         // Mapping order details
         List<OrderItem> items = mapItems(order, requestDto.getItems(), productMap);
         List<OrderPayment> payments = mapPayments(order, requestDto.getPayments());
-        List<StockMutation> mutations = mapStockMutations(order.getReceiptNumber(), requestDto.getItems(), productMap);;
+        List<StockMutation> mutations = mapStockMutations(order.getReceiptNumber(), requestDto.getItems(), productMap);
 
-        // Order amounts equivalen validation
+        // Order amounts equality validation
         BigDecimal totalAmountItems = calculateTotalItems(items);
         BigDecimal totalAmountPayments = calculateTotalPayments(payments);
         order.setTotalAmount(totalAmountPayments);
@@ -153,8 +153,6 @@ public class OrderService {
                 throw new BusinessValidationException("Insufficient stock for " + product.getName());
 
             product.setStock(product.getStock() - item.getQuantity());
-
-            BigDecimal quantity = BigDecimal.valueOf(item.getQuantity());
 
             StockMutation mutation = new StockMutation();
             mutation.setProduct(product);
