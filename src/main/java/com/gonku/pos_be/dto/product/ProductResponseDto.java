@@ -10,7 +10,7 @@ public class ProductResponseDto {
     private String barcode;
     private String name;
     private String description;
-    private BigDecimal costPrice;
+    private BigDecimal buyingPrice;
     private BigDecimal salePrice;
     private Integer stock;
     private String picturePath;

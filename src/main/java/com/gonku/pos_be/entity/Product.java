@@ -19,7 +19,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 15)
+    @Column(unique = true, length = 15)
     private String barcode;
 
     @Column(nullable = false, unique = true)
@@ -28,8 +28,8 @@ public class Product {
     @Column
     private String description;
 
-    @Column(name = "cost_price", nullable = false)
-    private BigDecimal costPrice;
+    @Column(name = "buying_price", nullable = false)
+    private BigDecimal buyingPrice;
 
     @Column(name = "sale_price", nullable = false)
     private BigDecimal salePrice;
