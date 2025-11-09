@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -67,7 +68,7 @@ public class OrderService {
         Map<Long, Product> productMap = products.stream()
                 .collect(Collectors.toMap(Product::getId, Function.identity()));
 
-        // Prepare order
+        // Set order header metadata
         String receiptNumber = orderNumberGeneratorService.generateOrderNumber();
         Order order = orderMapper.toEntity(requestDto);
         order.setReceiptNumber(receiptNumber);
@@ -81,60 +82,15 @@ public class OrderService {
         order.setPaidAmount(BigDecimal.ZERO);
         order.setChangeAmount(BigDecimal.ZERO);
 
-        List<OrderItem> items = new ArrayList<>();
-        List<OrderPayment> payments = new ArrayList<>();
-        List<StockMutation> mutations = new ArrayList<>();
+        // Mapping order details
+        List<OrderItem> items = mapItems(order, requestDto.getItems(), productMap);
+        List<OrderPayment> payments = mapPayments(order, requestDto.getPayments());
+        List<StockMutation> mutations = mapStockMutations(order.getReceiptNumber(), requestDto.getItems(), productMap);;
 
-        // Stock validation and build item details
-        for (OrderItemRequestDto item : requestDto.getItems()) {
-            Product product = productMap.get(item.getProductId());
-            if (product == null)
-                throw new ResourceNotFoundException("Product not found: " + item.getProductId());
-
-            if (product.getStock() < item.getQuantity())
-                throw new BusinessValidationException("Insufficient stock for " + product.getName());
-
-            product.setStock(product.getStock() - item.getQuantity());
-
-            BigDecimal quantity = BigDecimal.valueOf(item.getQuantity());
-            BigDecimal amount = product.getSalePrice()
-                    .multiply(quantity)
-                    .subtract(item.getDiscount() == null ? BigDecimal.ZERO : item.getDiscount());
-
-            OrderItem currentItem = orderItemMapper.toEntity(item);
-            currentItem.setOrder(order);
-            currentItem.setProductId(item.getProductId());
-            currentItem.setProductName(product.getName());
-            currentItem.setPrice(product.getSalePrice());
-            currentItem.setAmount(amount);
-
-            log.info("Current item amount: " + currentItem.getAmount());
-
-            items.add(currentItem);
-
-            StockMutation mutation = new StockMutation();
-            mutation.setProduct(product);
-            mutation.setQuantity(BigDecimal.valueOf(-item.getQuantity()));
-            mutation.setStockReferenceType(StockReferenceType.SALE);
-            mutation.setReferenceId(receiptNumber);
-            mutations.add(mutation);
-        }
-
-        for (OrderPaymentRequestDto payment : requestDto.getPayments()) {
-            OrderPayment currentPayment = orderPaymentMapper.toEntity(payment);
-            currentPayment.setOrder(order);
-            currentPayment.setStatus(PaymentStatus.PENDING);
-            payments.add(currentPayment);
-        }
-
-        // Order amount equivalen validation
+        // Order amounts equivalen validation
         BigDecimal totalAmountItems = calculateTotalItems(items);
         BigDecimal totalAmountPayments = calculateTotalPayments(payments);
         order.setTotalAmount(totalAmountPayments);
-
-        log.info("totalAmountItems: " + totalAmountItems);
-        log.info("totalAmountPayments: " + totalAmountPayments);
-        log.info("totalAmountOrder: " + order.getTotalAmount());
 
         boolean isAmountValid = order.getTotalAmount().compareTo(totalAmountItems) == 0
                 && order.getTotalAmount().compareTo(totalAmountPayments) == 0;
@@ -153,6 +109,78 @@ public class OrderService {
         productRepository.saveAll(products);
 
         return orderMapper.toDto(savedOrder);
+    }
+
+    private List<OrderItem> mapItems(Order order, List<OrderItemRequestDto> items, Map<Long, Product> productMap) {
+        if (items.isEmpty()) return Collections.emptyList();
+
+        List<OrderItem> mappedOrderItems = new ArrayList<>();
+
+        for (OrderItemRequestDto item : items) {
+            Product product = productMap.get(item.getProductId());
+            if (product == null)
+                throw new ResourceNotFoundException("Product not found: " + item.getProductId());
+
+            BigDecimal quantity = BigDecimal.valueOf(item.getQuantity());
+            BigDecimal amount = product.getSalePrice()
+                    .multiply(quantity)
+                    .subtract(item.getDiscount() == null ? BigDecimal.ZERO : item.getDiscount());
+
+            OrderItem currentItem = orderItemMapper.toEntity(item);
+            currentItem.setOrder(order);
+            currentItem.setProductId(item.getProductId());
+            currentItem.setProductName(product.getName());
+            currentItem.setPrice(product.getSalePrice());
+            currentItem.setAmount(amount);
+
+            mappedOrderItems.add(currentItem);
+        }
+
+        return mappedOrderItems;
+    }
+
+    private List<StockMutation> mapStockMutations(String orderReceiptNo, List<OrderItemRequestDto> items, Map<Long, Product> productMap) {
+        if (items.isEmpty()) return Collections.emptyList();
+
+        List<StockMutation> mappedMutations = new ArrayList<>();
+
+        for (OrderItemRequestDto item : items) {
+            Product product = productMap.get(item.getProductId());
+            if (product == null)
+                throw new ResourceNotFoundException("Product not found: " + item.getProductId());
+
+            if (product.getStock() < item.getQuantity())
+                throw new BusinessValidationException("Insufficient stock for " + product.getName());
+
+            product.setStock(product.getStock() - item.getQuantity());
+
+            BigDecimal quantity = BigDecimal.valueOf(item.getQuantity());
+
+            StockMutation mutation = new StockMutation();
+            mutation.setProduct(product);
+            mutation.setQuantity(BigDecimal.valueOf(-item.getQuantity()));
+            mutation.setStockReferenceType(StockReferenceType.SALE);
+            mutation.setReferenceId(orderReceiptNo);
+            mappedMutations.add(mutation);
+        }
+
+        return mappedMutations;
+    }
+
+    private List<OrderPayment> mapPayments(Order order, List<OrderPaymentRequestDto> payments) {
+        if (payments.isEmpty()) return Collections.emptyList();
+
+        List<OrderPayment> mappedPayments = new ArrayList<>();
+
+        for (OrderPaymentRequestDto payment : payments) {
+            OrderPayment currentPayment = orderPaymentMapper.toEntity(payment);
+            currentPayment.setOrder(order);
+            currentPayment.setStatus(PaymentStatus.PENDING);
+
+            mappedPayments.add(currentPayment);
+        }
+
+        return mappedPayments;
     }
 
     private BigDecimal calculateTotalItems(List<OrderItem> items) {
