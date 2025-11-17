@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +40,7 @@ public class OrderService {
     private final StockMutationRepository stockMutationRepository;
     private final ProductRepository productRepository;
     private static final String ENTITY_NOT_FOUND = "Order";
+    private static final BigDecimal TAX_RATE = new BigDecimal("0.11");
 
     public PageResponseDto<OrderResponseDto> findAll(PageRequestDto pageRequestDto) {
         Pageable pageable = PageUtil.createPageable(pageRequestDto);
@@ -72,15 +74,8 @@ public class OrderService {
         String receiptNumber = orderNumberGeneratorService.generateOrderNumber();
         Order order = orderMapper.toEntity(requestDto);
         order.setReceiptNumber(receiptNumber);
-        order.setStatus(OrderStatus.NEW);
+        order.setStatus(OrderStatus.UNPAID);
         order.setOrderDate(LocalDate.now());
-
-        // Set order amounts
-        order.setDiscountTotal(BigDecimal.ZERO);
-        order.setSubtotal(BigDecimal.ZERO);
-        order.setTaxTotal(BigDecimal.ZERO);
-        order.setPaidAmount(BigDecimal.ZERO);
-        order.setChangeAmount(BigDecimal.ZERO);
 
         // Mapping order details
         List<OrderItem> items = mapItems(order, requestDto.getItems(), productMap);
@@ -88,12 +83,23 @@ public class OrderService {
         List<StockMutation> mutations = mapStockMutations(order.getReceiptNumber(), requestDto.getItems(), productMap);
 
         // Order amounts equality validation
-        BigDecimal totalAmountItems = calculateTotalItems(items);
+        BigDecimal totalAmountItems = calculateTotalAmountItems(items);
         BigDecimal totalAmountPayments = calculateTotalPayments(payments);
-        order.setTotalAmount(totalAmountPayments);
 
-        boolean isAmountValid = order.getTotalAmount().compareTo(totalAmountItems) == 0
-                && order.getTotalAmount().compareTo(totalAmountPayments) == 0;
+        // Set order amounts
+        BigDecimal discountTotal = order.getDiscountTotal().add(calculateTotalDiscountItems(items));
+        BigDecimal taxBase = totalAmountItems.subtract(discountTotal);
+        BigDecimal taxTotal = taxBase.multiply(TAX_RATE).setScale(2, RoundingMode.HALF_UP);
+
+        order.setDiscountTotal(discountTotal);
+        order.setSubtotal(totalAmountItems);
+        order.setTaxTotal(taxTotal);
+        order.setPaidAmount(totalAmountPayments);
+        order.setTotalAmount(totalAmountItems.subtract(discountTotal).add(taxTotal));
+        order.setChangeAmount(order.getPaidAmount().subtract(order.getTotalAmount()));
+
+        boolean isAmountValid = order.getSubtotal().compareTo(totalAmountItems) == 0
+                && order.getSubtotal().compareTo(totalAmountPayments) <= 0;
 
         if (!isAmountValid) {
             throw new BusinessValidationException(
@@ -181,9 +187,15 @@ public class OrderService {
         return mappedPayments;
     }
 
-    private BigDecimal calculateTotalItems(List<OrderItem> items) {
+    private BigDecimal calculateTotalAmountItems(List<OrderItem> items) {
         return items.stream()
                 .map(OrderItem::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private BigDecimal calculateTotalDiscountItems(List<OrderItem> items) {
+        return items.stream()
+                .map(OrderItem::getDiscount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
