@@ -13,7 +13,7 @@ public class OrderItemRequestDto {
     private Long productId;
 
     @Min(value = 1, message = "Quantity must be equal or greater than 0")
-    private int quantity;
+    private BigDecimal quantity;
 
     @Min(value = 0, message = "Discount must be equal or greater than 0")
     private BigDecimal discount;

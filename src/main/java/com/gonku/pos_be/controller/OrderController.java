@@ -5,6 +5,7 @@ import com.gonku.pos_be.dto.common.PageRequestDto;
 import com.gonku.pos_be.dto.common.PageResponseDto;
 import com.gonku.pos_be.dto.order.OrderRequestDto;
 import com.gonku.pos_be.dto.order.OrderResponseDto;
+import com.gonku.pos_be.entity.OrderStatus;
 import com.gonku.pos_be.service.OrderService;
 import com.gonku.pos_be.util.ApiResponse;
 import jakarta.validation.Valid;
@@ -64,5 +65,17 @@ public class OrderController {
                 .toUri();
 
         return ResponseEntity.created(location).body(response);
+    }
+
+    @PostMapping(PATH_WITH_ID + "/cancel")
+    public ResponseEntity<ApiResponse<Void>> cancelOrVoid(@PathVariable Long id) {
+        OrderStatus newStatus = orderService.cancelOrVoid(id);
+        String message = newStatus.equals(OrderStatus.CANCELLED)
+                ? ResponseMessages.cancelled("Order")
+                : ResponseMessages.voided("Order");
+
+        ApiResponse<Void> response = ApiResponse.success(message, null);
+
+        return ResponseEntity.ok(response);
     }
 }

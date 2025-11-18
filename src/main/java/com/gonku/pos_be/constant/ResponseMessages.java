@@ -29,6 +29,14 @@ public class ResponseMessages {
         return String.format("%s has been deleted successfully", entity);
     }
 
+    public static String cancelled(String entity) {
+        return String.format("%s has been cancelled successfully", entity);
+    }
+
+    public static String voided(String entity) {
+        return String.format("%s has been voided successfully", entity);
+    }
+
     public static String notFound(String entity) {
         return String.format("%s not found", entity);
     }

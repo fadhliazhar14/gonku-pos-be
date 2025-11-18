@@ -34,8 +34,8 @@ public class Product {
     @Column(name = "sale_price", nullable = false)
     private BigDecimal salePrice;
 
-    @Column
-    private Integer stock;
+    @Column(precision = 18, scale = 3)
+    private BigDecimal stock;
 
     @Column
     private String picturePath;

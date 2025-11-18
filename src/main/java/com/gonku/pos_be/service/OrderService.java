@@ -10,7 +10,6 @@ import com.gonku.pos_be.exception.ResourceNotFoundException;
 import com.gonku.pos_be.repository.*;
 import com.gonku.pos_be.util.PageUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,17 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+    private final OrderValidationService orderValidationService;
     private final OrderNumberGeneratorService orderNumberGeneratorService;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
@@ -38,6 +34,7 @@ public class OrderService {
     private final OrderItemMapper orderItemMapper;
     private final OrderPaymentMapper orderPaymentMapper;
     private final StockMutationRepository stockMutationRepository;
+    private final StockMutationService stockMutationService;
     private final ProductRepository productRepository;
     private static final String ENTITY_NOT_FOUND = "Order";
     private static final BigDecimal TAX_RATE = new BigDecimal("0.11");
@@ -69,6 +66,13 @@ public class OrderService {
 
         Map<Long, Product> productMap = products.stream()
                 .collect(Collectors.toMap(Product::getId, Function.identity()));
+
+        // Check inactive products
+        List<Product> inactiveItems = products.stream().filter(p -> !p.getIsActive()).toList();
+
+        if (!inactiveItems.isEmpty()) {
+            throw new BusinessValidationException("Order can not be processed. There are any inactive items for current order");
+        }
 
         // Set order header metadata
         String receiptNumber = orderNumberGeneratorService.generateOrderNumber();
@@ -117,6 +121,51 @@ public class OrderService {
         return orderMapper.toDto(savedOrder);
     }
 
+    @Transactional
+    public OrderStatus cancelOrVoid(Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ResponseMessages.notFound(ENTITY_NOT_FOUND)));
+
+        // Check current order status
+        OrderStatus status = order.getStatus();
+        orderValidationService.validateCancelable(status);
+
+        // Change order status
+        OrderStatus newStatus = determineNewStatus(order);
+        order.setStatus(newStatus);
+
+        // Returned stock mutation
+        List<StockMutation> lastStockMutation = stockMutationRepository.findByReferenceId(order.getReceiptNumber());
+        List<StockMutation> returnedStockMutation = stockMutationService.buildReturnStockMutations(lastStockMutation, order);
+
+        // Update product stock
+        List<Long> productIds = lastStockMutation.stream()
+                .map(sm -> sm.getProduct().getId())
+                .toList();
+
+        List<Product> products = productRepository.findAllByIdInForUpdate(productIds);
+
+        Map<Long, Product> productMap = products.stream()
+                .collect(Collectors.toMap(Product::getId, Function.identity()));
+
+        stockMutationService.applyReturnedStockMutation(returnedStockMutation, productMap);
+
+        // Save all entities
+        orderRepository.save(order);
+        productRepository.saveAll(productMap.values());
+        stockMutationRepository.saveAll(returnedStockMutation);
+
+        return newStatus;
+    }
+
+    private OrderStatus determineNewStatus(Order order) {
+        OrderStatus status = order.getStatus();
+
+        return (status == OrderStatus.PAID || status == OrderStatus.COMPLETED)
+                ? OrderStatus.VOIDED
+                : OrderStatus.CANCELLED;
+    }
+
     private List<OrderItem> mapItems(Order order, List<OrderItemRequestDto> items, Map<Long, Product> productMap) {
         if (items.isEmpty()) return Collections.emptyList();
 
@@ -127,7 +176,7 @@ public class OrderService {
             if (product == null)
                 throw new ResourceNotFoundException("Product not found: " + item.getProductId());
 
-            BigDecimal quantity = BigDecimal.valueOf(item.getQuantity());
+            BigDecimal quantity = item.getQuantity();
             BigDecimal amount = product.getSalePrice()
                     .multiply(quantity)
                     .subtract(item.getDiscount() == null ? BigDecimal.ZERO : item.getDiscount());
@@ -155,14 +204,14 @@ public class OrderService {
             if (product == null)
                 throw new ResourceNotFoundException("Product not found: " + item.getProductId());
 
-            if (product.getStock() < item.getQuantity())
+            if (product.getStock().compareTo(item.getQuantity()) <= 0)
                 throw new BusinessValidationException("Insufficient stock for " + product.getName());
 
-            product.setStock(product.getStock() - item.getQuantity());
+            product.setStock(product.getStock().subtract(item.getQuantity()));
 
             StockMutation mutation = new StockMutation();
             mutation.setProduct(product);
-            mutation.setQuantity(BigDecimal.valueOf(-item.getQuantity()));
+            mutation.setQuantity(item.getQuantity().negate());
             mutation.setStockReferenceType(StockReferenceType.SALE);
             mutation.setReferenceId(orderReceiptNo);
             mappedMutations.add(mutation);

@@ -12,7 +12,7 @@ public class OrderItemResponseDto {
     private Long productId;
     private String productName;
     private BigDecimal price;
-    private int quantity;
+    private BigDecimal quantity;
     private BigDecimal discount;
     private BigDecimal amount;
 }

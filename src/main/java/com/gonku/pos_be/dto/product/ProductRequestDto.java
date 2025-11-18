@@ -30,7 +30,7 @@ public class ProductRequestDto {
     private BigDecimal salePrice;
 
     @Min(value = 0, message = "Stock must be equal or greater than 0")
-    private Integer stock;
+    private BigDecimal stock;
 
     private String picturePath;
 
