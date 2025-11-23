@@ -19,8 +19,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     WHERE 
         (
             :search IS NULL OR :search = ''
-            OR c.name LIKE CONCAT('%', :search, '%')
-            OR c.description LIKE CONCAT('%', :search, '%')
+            OR LOWER(c.name) LIKE LOWER(CONCAT('%', :search, '%'))
+            OR LOWER(c.description) LIKE LOWER(CONCAT('%', :search, '%'))
         )
         AND (c.isActive = :isActive OR c.isActive IS NULL)
     """)

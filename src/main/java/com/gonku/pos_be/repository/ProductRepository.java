@@ -27,9 +27,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     WHERE 
         (
             :search IS NULL OR :search = ''
-            OR p.barcode LIKE CONCAT('%', :search, '%')
-            OR p.name LIKE CONCAT('%', :search, '%')
-            OR p.description LIKE CONCAT('%', :search, '%')
+            OR LOWER(p.barcode) LIKE LOWER(CONCAT('%', :search, '%'))
+            OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))
+            OR LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%'))
         )
         AND (p.isActive = :isActive OR p.isActive IS NULL)
     """)

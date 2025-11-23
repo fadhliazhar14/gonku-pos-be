@@ -19,10 +19,10 @@ public interface UomRepository extends JpaRepository<Uom, Long> {
     WHERE 
         (
             :search IS NULL OR :search = ''
-            OR u.code LIKE CONCAT('%', :search, '%')
-            OR u.name LIKE CONCAT('%', :search, '%')
-            OR u.description LIKE CONCAT('%', :search, '%')
-            OR u.symbol LIKE CONCAT('%', :search, '%')
+            OR LOWER(u.code) LIKE LOWER(CONCAT('%', :search, '%'))
+            OR LOWER(u.name) LIKE LOWER(CONCAT('%', :search, '%'))
+            OR LOWER(u.description) LIKE LOWER(CONCAT('%', :search, '%'))
+            OR LOWER(u.symbol) LIKE LOWER(CONCAT('%', :search, '%'))
         )
         AND (u.isActive = :isActive OR u.isActive IS NULL)
     """)
