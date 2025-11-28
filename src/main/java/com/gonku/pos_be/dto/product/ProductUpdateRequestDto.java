@@ -23,9 +23,9 @@ public class ProductUpdateRequestDto {
     @Size(max = 50, message = "Description max 50 characters")
     private String description;
 
-    @NotNull(message = "Cost price is required")
-    @Min(value = 1, message = "Cost price must be at least 1")
-    private BigDecimal costPrice;
+    @NotNull(message = "Buying price is required")
+    @Min(value = 1, message = "Buying price must be at least 1")
+    private BigDecimal buyingPrice;
 
     @NotNull(message = "Sale price is required")
     @Min(value = 1, message = "Sale price must be at least 1")
