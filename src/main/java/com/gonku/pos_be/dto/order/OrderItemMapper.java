@@ -10,7 +10,7 @@ import java.util.List;
 public interface OrderItemMapper {
     OrderItemResponseDto toDto(OrderItem orderItem);
 
-    List<OrderItem> toDtoList(List<OrderItem> orderItems);
+    List<OrderItemResponseDto> toDtoList(List<OrderItem> orderItems);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "order", ignore = true)

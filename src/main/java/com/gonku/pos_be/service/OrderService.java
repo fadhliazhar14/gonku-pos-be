@@ -51,9 +51,14 @@ public class OrderService {
         return PageUtil.createPageResponse(responseDtoList, pageable, orderPage.getTotalElements());
     }
 
-    public OrderResponseDto findById(Long id) {
-        return orderMapper.toDto(orderRepository.findById(id)
+    public OrderDetailsResponseDto findById(Long id) {
+        OrderResponseDto order =  orderMapper.toDto(orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ResponseMessages.notFound(ENTITY_NOT_FOUND))));
+
+        List<OrderItemResponseDto> orderItems = orderItemMapper.toDtoList(orderItemRepository.findByOrderId(id));
+        List<OrderPaymentResponseDto> orderPayments = orderPaymentMapper.toDtoList(orderPaymentRepository.findByOrderId(id));
+
+        return new OrderDetailsResponseDto(order, orderItems, orderPayments);
     }
 
     @Transactional

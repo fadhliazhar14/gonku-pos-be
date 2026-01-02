@@ -10,7 +10,7 @@ import java.util.List;
 public interface OrderPaymentMapper {
     OrderPaymentResponseDto toDto(OrderPayment orderPayment);
 
-    List<OrderPayment> toDtoList(List<OrderPayment> orderPayments);
+    List<OrderPaymentResponseDto> toDtoList(List<OrderPayment> orderPayments);
 
     @Mapping(target = "id", ignore = true)
     OrderPayment toEntity(OrderPaymentRequestDto requestDto);

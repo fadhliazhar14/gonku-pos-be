@@ -3,6 +3,7 @@ package com.gonku.pos_be.controller;
 import com.gonku.pos_be.constant.ResponseMessages;
 import com.gonku.pos_be.dto.common.PageRequestDto;
 import com.gonku.pos_be.dto.common.PageResponseDto;
+import com.gonku.pos_be.dto.order.OrderDetailsResponseDto;
 import com.gonku.pos_be.dto.order.OrderRequestDto;
 import com.gonku.pos_be.dto.order.OrderResponseDto;
 import com.gonku.pos_be.entity.OrderStatus;
@@ -45,9 +46,9 @@ public class OrderController {
     }
 
     @GetMapping(PATH_WITH_ID)
-    public ResponseEntity<ApiResponse<OrderResponseDto>> getById(@PathVariable Long id) {
-        OrderResponseDto order = orderService.findById(id);
-        ApiResponse<OrderResponseDto> response = ApiResponse.success(ResponseMessages.SUCCESS, order);
+    public ResponseEntity<ApiResponse<OrderDetailsResponseDto>> getById(@PathVariable Long id) {
+        OrderDetailsResponseDto order = orderService.findById(id);
+        ApiResponse<OrderDetailsResponseDto> response = ApiResponse.success(ResponseMessages.SUCCESS, order);
 
         return ResponseEntity.ok(response);
     }
