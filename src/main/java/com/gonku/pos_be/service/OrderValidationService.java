@@ -1,6 +1,6 @@
 package com.gonku.pos_be.service;
 
-import com.gonku.pos_be.entity.OrderStatus;
+import com.gonku.pos_be.entity.order.OrderStatus;
 import com.gonku.pos_be.exception.BusinessValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

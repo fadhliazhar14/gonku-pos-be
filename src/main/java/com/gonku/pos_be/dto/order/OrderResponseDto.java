@@ -1,11 +1,10 @@
 package com.gonku.pos_be.dto.order;
 
-import com.gonku.pos_be.entity.OrderStatus;
+import com.gonku.pos_be.entity.order.OrderStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 public class OrderResponseDto {

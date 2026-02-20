@@ -1,6 +1,6 @@
 package com.gonku.pos_be.service;
 
-import com.gonku.pos_be.entity.OrderNumberSequence;
+import com.gonku.pos_be.entity.order.OrderNumberSequence;
 import com.gonku.pos_be.repository.OrderNumberSequenceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

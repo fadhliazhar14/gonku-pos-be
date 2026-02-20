@@ -1,6 +1,6 @@
 package com.gonku.pos_be.dto.order;
 
-import com.gonku.pos_be.entity.PaymentMethod;
+import com.gonku.pos_be.entity.payment.PaymentMethod;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

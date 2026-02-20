@@ -1,4 +1,4 @@
-package com.gonku.pos_be.entity;
+package com.gonku.pos_be.entity.product;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,34 +6,31 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "categories")
-public class Category {
+@Table(name = "uom")
+public class Uom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+    @Column(nullable = false, unique = true, length = 20)
+    private String code; // e.g. "PCS", "KG", "LTR"
+
+    @Column(nullable = false, length = 50)
+    private String name; // e.g. "Pieces", "Kilogram", "Liter"
 
     @Column
     private String description;
 
-    @Column
-    private String picturePath;
+    @Column(length = 10)
+    private String symbol; // e.g. "pcs", "kg", "L"
 
-    @Column(name = "is_active", nullable = false)
+    @Column(nullable = false)
     private Boolean isActive;
-
-    @OneToMany(mappedBy = "category")
-    private List<Product> products;
 
     @PrePersist
     public void prePersist() {
@@ -42,3 +39,4 @@ public class Category {
         }
     }
 }
+

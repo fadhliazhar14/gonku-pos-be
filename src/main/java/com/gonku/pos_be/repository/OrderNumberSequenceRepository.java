@@ -1,6 +1,6 @@
 package com.gonku.pos_be.repository;
 
-import com.gonku.pos_be.entity.OrderNumberSequence;
+import com.gonku.pos_be.entity.order.OrderNumberSequence;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;

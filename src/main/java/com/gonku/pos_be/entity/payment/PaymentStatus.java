@@ -1,4 +1,4 @@
-package com.gonku.pos_be.entity;
+package com.gonku.pos_be.entity.payment;
 
 public enum PaymentStatus {
     PENDING,

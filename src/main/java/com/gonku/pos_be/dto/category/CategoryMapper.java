@@ -1,6 +1,6 @@
 package com.gonku.pos_be.dto.category;
 
-import com.gonku.pos_be.entity.Category;
+import com.gonku.pos_be.entity.category.Category;
 import org.mapstruct.*;
 
 import java.util.List;

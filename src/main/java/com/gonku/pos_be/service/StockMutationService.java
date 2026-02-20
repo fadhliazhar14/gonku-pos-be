@@ -1,9 +1,9 @@
 package com.gonku.pos_be.service;
 
-import com.gonku.pos_be.entity.Order;
-import com.gonku.pos_be.entity.Product;
-import com.gonku.pos_be.entity.StockMutation;
-import com.gonku.pos_be.entity.StockReferenceType;
+import com.gonku.pos_be.entity.order.Order;
+import com.gonku.pos_be.entity.product.Product;
+import com.gonku.pos_be.entity.inventory.StockMutation;
+import com.gonku.pos_be.entity.inventory.StockReferenceType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

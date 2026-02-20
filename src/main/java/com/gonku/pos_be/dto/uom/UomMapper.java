@@ -1,6 +1,6 @@
 package com.gonku.pos_be.dto.uom;
 
-import com.gonku.pos_be.entity.Uom;
+import com.gonku.pos_be.entity.product.Uom;
 import org.mapstruct.*;
 
 import java.util.List;

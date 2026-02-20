@@ -1,5 +1,6 @@
-package com.gonku.pos_be.entity;
+package com.gonku.pos_be.entity.product;
 
+import com.gonku.pos_be.entity.category.Category;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

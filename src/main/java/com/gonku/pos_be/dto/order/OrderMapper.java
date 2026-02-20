@@ -1,6 +1,6 @@
 package com.gonku.pos_be.dto.order;
 
-import com.gonku.pos_be.entity.Order;
+import com.gonku.pos_be.entity.order.Order;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

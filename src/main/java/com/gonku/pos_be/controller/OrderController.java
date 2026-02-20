@@ -6,7 +6,7 @@ import com.gonku.pos_be.dto.common.PageResponseDto;
 import com.gonku.pos_be.dto.order.OrderDetailsResponseDto;
 import com.gonku.pos_be.dto.order.OrderRequestDto;
 import com.gonku.pos_be.dto.order.OrderResponseDto;
-import com.gonku.pos_be.entity.OrderStatus;
+import com.gonku.pos_be.entity.order.OrderStatus;
 import com.gonku.pos_be.service.OrderService;
 import com.gonku.pos_be.util.ApiResponse;
 import jakarta.validation.Valid;

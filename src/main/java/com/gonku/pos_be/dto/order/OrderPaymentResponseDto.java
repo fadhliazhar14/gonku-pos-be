@@ -1,6 +1,6 @@
 package com.gonku.pos_be.dto.order;
 
-import com.gonku.pos_be.entity.PaymentStatus;
+import com.gonku.pos_be.entity.payment.PaymentStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;

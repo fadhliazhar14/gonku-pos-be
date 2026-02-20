@@ -1,4 +1,4 @@
-package com.gonku.pos_be.entity;
+package com.gonku.pos_be.entity.common;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

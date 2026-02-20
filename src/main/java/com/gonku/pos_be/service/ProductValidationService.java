@@ -1,8 +1,8 @@
 package com.gonku.pos_be.service;
 
 import com.gonku.pos_be.constant.ResponseMessages;
-import com.gonku.pos_be.entity.Category;
-import com.gonku.pos_be.entity.Uom;
+import com.gonku.pos_be.entity.category.Category;
+import com.gonku.pos_be.entity.product.Uom;
 import com.gonku.pos_be.exception.BusinessValidationException;
 import com.gonku.pos_be.exception.ResourceNotFoundException;
 import com.gonku.pos_be.repository.CategoryRepository;

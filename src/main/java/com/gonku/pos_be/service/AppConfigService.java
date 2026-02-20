@@ -1,6 +1,6 @@
 package com.gonku.pos_be.service;
 
-import com.gonku.pos_be.entity.AppConfig;
+import com.gonku.pos_be.entity.common.AppConfig;
 import com.gonku.pos_be.repository.AppConfigRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,5 +1,7 @@
-package com.gonku.pos_be.entity;
+package com.gonku.pos_be.entity.order;
 
+import com.gonku.pos_be.entity.payment.PaymentMethod;
+import com.gonku.pos_be.entity.payment.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

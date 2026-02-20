@@ -1,6 +1,6 @@
 package com.gonku.pos_be.repository;
 
-import com.gonku.pos_be.entity.OrderPayment;
+import com.gonku.pos_be.entity.order.OrderPayment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

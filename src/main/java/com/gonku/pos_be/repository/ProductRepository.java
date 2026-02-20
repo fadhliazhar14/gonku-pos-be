@@ -1,6 +1,6 @@
 package com.gonku.pos_be.repository;
 
-import com.gonku.pos_be.entity.Product;
+import com.gonku.pos_be.entity.product.Product;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

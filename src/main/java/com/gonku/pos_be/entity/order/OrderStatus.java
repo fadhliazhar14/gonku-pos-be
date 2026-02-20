@@ -1,4 +1,4 @@
-package com.gonku.pos_be.entity;
+package com.gonku.pos_be.entity.order;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

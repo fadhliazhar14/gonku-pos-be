@@ -1,6 +1,6 @@
 package com.gonku.pos_be.repository;
 
-import com.gonku.pos_be.entity.Uom;
+import com.gonku.pos_be.entity.product.Uom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

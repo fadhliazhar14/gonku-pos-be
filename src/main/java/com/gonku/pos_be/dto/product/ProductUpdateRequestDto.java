@@ -1,7 +1,5 @@
 package com.gonku.pos_be.dto.product;
 
-import com.gonku.pos_be.entity.Category;
-import com.gonku.pos_be.entity.Uom;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -7,7 +7,7 @@ import com.gonku.pos_be.dto.uom.UomMapper;
 import com.gonku.pos_be.dto.uom.UomRequestDto;
 import com.gonku.pos_be.dto.uom.UomResponseDto;
 import com.gonku.pos_be.dto.uom.UomUpdateRequestDto;
-import com.gonku.pos_be.entity.Uom;
+import com.gonku.pos_be.entity.product.Uom;
 import com.gonku.pos_be.exception.ResourceNotFoundException;
 import com.gonku.pos_be.repository.UomRepository;
 import com.gonku.pos_be.util.PageUtil;
