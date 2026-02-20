@@ -1,6 +1,7 @@
 package com.gonku.pos_be.entity.product;
 
 import com.gonku.pos_be.entity.category.Category;
+import com.gonku.pos_be.entity.common.Tenant;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -51,6 +52,10 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uom_id")
     private Uom uom;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tenant_id")
+    private Tenant tenant;
 
     @PrePersist
     public void prePersist() {

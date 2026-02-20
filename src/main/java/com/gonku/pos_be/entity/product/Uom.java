@@ -1,5 +1,6 @@
 package com.gonku.pos_be.entity.product;
 
+import com.gonku.pos_be.entity.common.Tenant;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,6 +32,10 @@ public class Uom {
 
     @Column(nullable = false)
     private Boolean isActive;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tenant_id")
+    private Tenant tenant;
 
     @PrePersist
     public void prePersist() {

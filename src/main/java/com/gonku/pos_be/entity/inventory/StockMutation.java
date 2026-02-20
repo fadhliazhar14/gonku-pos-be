@@ -1,5 +1,7 @@
 package com.gonku.pos_be.entity.inventory;
 
+import com.gonku.pos_be.entity.common.Outlet;
+import com.gonku.pos_be.entity.common.Tenant;
 import com.gonku.pos_be.entity.product.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,4 +35,12 @@ public class StockMutation {
 
     @Column(name = "quantity", precision = 18, scale = 3)
     private BigDecimal quantity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tenant_id")
+    private Tenant tenant;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "outlet_id")
+    private Outlet outlet;
 }

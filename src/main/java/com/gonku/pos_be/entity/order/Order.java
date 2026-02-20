@@ -1,5 +1,7 @@
 package com.gonku.pos_be.entity.order;
 
+import com.gonku.pos_be.entity.common.Outlet;
+import com.gonku.pos_be.entity.common.Tenant;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -69,4 +71,12 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderPayment> payments = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tenant_id")
+    private Tenant tenant;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "outlet_id")
+    private Outlet outlet;
 }

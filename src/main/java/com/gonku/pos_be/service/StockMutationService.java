@@ -1,5 +1,7 @@
 package com.gonku.pos_be.service;
 
+import com.gonku.pos_be.entity.common.Outlet;
+import com.gonku.pos_be.entity.common.Tenant;
 import com.gonku.pos_be.entity.order.Order;
 import com.gonku.pos_be.entity.product.Product;
 import com.gonku.pos_be.entity.inventory.StockMutation;
@@ -24,7 +26,9 @@ public class StockMutationService {
                         sm.getProduct(),
                         StockReferenceType.RETURN,
                         order.getReceiptNumber(),
-                        sm.getQuantity().abs()
+                        sm.getQuantity().abs(),
+                        new Tenant(),
+                        new Outlet()
                 ))
                 .toList();
     }

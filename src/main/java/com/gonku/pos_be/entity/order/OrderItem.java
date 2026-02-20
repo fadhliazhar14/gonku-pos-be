@@ -1,5 +1,7 @@
 package com.gonku.pos_be.entity.order;
 
+import com.gonku.pos_be.entity.common.Outlet;
+import com.gonku.pos_be.entity.common.Tenant;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,5 +42,13 @@ public class OrderItem {
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tenant_id")
+    private Tenant tenant;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "outlet_id")
+    private Outlet outlet;
 }
 

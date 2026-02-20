@@ -1,5 +1,7 @@
 package com.gonku.pos_be.entity.order;
 
+import com.gonku.pos_be.entity.common.Outlet;
+import com.gonku.pos_be.entity.common.Tenant;
 import com.gonku.pos_be.entity.payment.PaymentMethod;
 import com.gonku.pos_be.entity.payment.PaymentStatus;
 import jakarta.persistence.*;
@@ -45,6 +47,14 @@ public class OrderPayment {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tenant_id")
+    private Tenant tenant;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "outlet_id")
+    private Outlet outlet;
 
     @PrePersist
     protected void onCreate() {
